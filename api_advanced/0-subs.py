@@ -2,14 +2,13 @@
 """
 0-subs.py
 
-This module contains the function number_of_subscribers which queries the Reddit API
-to return the number of subscribers for a given subreddit.
-
+This module contains the function number_of_subscribers which queries
+the Reddit API to return the number of subscribers for a given subreddit.
 If the subreddit is invalid or inaccessible, the function returns 0.
 """
 
 import requests
-import sys
+
 
 def number_of_subscribers(subreddit):
     client_id = "BLDc0NYEGo_wuYewe9CZdw"
@@ -20,10 +19,12 @@ def number_of_subscribers(subreddit):
     auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     data = {"grant_type": "client_credentials"}
     headers = {"User-Agent": user_agent}
-    
+
     token_response = requests.post(
         "https://www.reddit.com/api/v1/access_token",
-        auth=auth, data=data, headers=headers
+        auth=auth,
+        data=data,
+        headers=headers
     )
 
     if token_response.status_code != 200:
@@ -33,7 +34,6 @@ def number_of_subscribers(subreddit):
     token = token_response.json().get("access_token")
     headers["Authorization"] = "bearer {}".format(token)
 
-    # Now query subreddit
     url = "https://oauth.reddit.com/r/{}/about".format(subreddit)
     response = requests.get(url, headers=headers)
 
@@ -42,4 +42,3 @@ def number_of_subscribers(subreddit):
     else:
         print("DEBUG: Final request failed:", response.status_code)
         return 0
-
